@@ -138,11 +138,16 @@ void loop() {
   if(digitalRead(buttonPin) == 1) {
 
     // If button is pressed and the angle is not 90 degrees
-    // First check the set angle is not the same as the current angle of the motor
-    // and move to the set angle is it is not
+    // First check the set angle is greater than the current angle of the motor
+    // and move to the set angle if it is
+    // If the set angle is lower than the current angle
+    // Check for an obstruction, and if there is an obstruction
+    // move the motor to the set angle
     // Otherwise, move to 90 degrees
     if(mainServo.read() != 90) {
-      if(setAngle != mainServo.read()) {
+      if(setAngle > mainServo.read()) {
+        slowlyRotate(setAngle, &mainServo); 
+      } else if(setAngle < mainServo.read() && checkObstruction(trigPin, echoPin, .10)){
         slowlyRotate(setAngle, &mainServo); 
       } else {
         slowlyRotate(90, &mainServo); 
